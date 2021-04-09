@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         jsonApiPlaceHolder = retrofit.create(JsonApiPlaceHolder.class);
+
+//        Null in empty fields
+        Gson gson = new GsonBuilder().serializeNulls().create();
 
 //        Get all posts /posts
 //        getAllPosts();
@@ -61,7 +67,79 @@ public class MainActivity extends AppCompatActivity {
 //        Get list post using url
 //        getPostUrl();
 
-          createPost();
+//          Create POST
+//          createPost();
+
+//        Update using PUT
+//        updatePostPut();
+//
+//        Update using PATCH
+//        updatePostPatch();
+
+//        Delete using DELETE
+//        deletePost();
+
+    }
+
+    private void deletePost(){
+        Call<Void> call = jsonApiPlaceHolder.deletePost(3);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                //if response code equals 200, then post has been deleted
+                Log.d("#","Delete post code: " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void updatePostPatch(){
+        /*update only  selected records*/
+        Post post = new Post (5,"Title", null);
+        Call<Post> call = jsonApiPlaceHolder.updatePostPatch(post.getId(),post);
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if(!response.isSuccessful()){
+                    Log.d(getClass().getSimpleName(), "onResponse|postList|Message" + response.message());
+                    return;
+                }
+                //if code is 200 then post is update (PUT)
+                Log.d("#","Code: " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                Log.d(getClass().getSimpleName(), "onFailure|postsList|Message: " + t.getMessage());
+            }
+        });
+    }
+
+    private void updatePostPut(){
+        /*update records, but rewrite object*/
+        Post post = new Post (5,"Title", null);
+        Call<Post> call = jsonApiPlaceHolder.updatePostPut(post.getId(),post);
+        call.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if(!response.isSuccessful()){
+                    Log.d(getClass().getSimpleName(), "onResponse|postList|Message" + response.message());
+                    return;
+                }
+                //if code is 200 then post is update (PUT)
+                Log.d("#","Code: " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                Log.d(getClass().getSimpleName(), "onFailure|postsList|Message: " + t.getMessage());
+            }
+        });
+
     }
 
     private void createPost(){
