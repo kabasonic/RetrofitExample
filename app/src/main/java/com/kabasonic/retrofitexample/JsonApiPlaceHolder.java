@@ -12,6 +12,9 @@ import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.HeaderMap;
+import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -62,9 +65,26 @@ public interface JsonApiPlaceHolder {
     @POST("posts")
     Call<Post> createPost(@FieldMap Map<String, String> fields);
 
+    //Hard code HEADERS
+//    @Headers({"Static-headers 1: text" ,"Static-headers 2: text"} )
+//    @PUT("posts/{id}")
+//    Call<Post> updatePostPut(@Path("id") int id, @Body Post post);
+
+    //Dynamic HEADERS
+//    @PUT("posts/{id}")
+//    Call<Post> updatePostPut(@Header("Headers") String valuesHeaders,
+//            @Path("id") int id,
+//            @Body Post post);
 
     @PUT("posts/{id}")
-    Call<Post> updatePostPut(@Path("id") int id, @Body Post post);
+    Call<Post> updatePostPut(@Path("id") int id,
+                             @Body Post post);
+
+    //Headers MAP
+//    @PATCH("posts/{id}")
+//    Call<Post> updatePostPatch(@HeaderMap Map<String, String> headersMap,
+//                               @Path("id") int id,
+//                               @Body Post post);
 
     @PATCH("posts/{id}")
     Call<Post> updatePostPatch(@Path("id") int id, @Body Post post);

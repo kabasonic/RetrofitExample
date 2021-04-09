@@ -8,12 +8,17 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +39,22 @@ public class MainActivity extends AppCompatActivity {
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
+                //using Interceptor for headers
+                .addInterceptor(new Interceptor() {
+                    @NotNull
+                    @Override
+                    public okhttp3.Response intercept(@NotNull Chain chain) throws IOException {
+                        Request originalRequest = chain.request();
+
+                        Request newRequest = originalRequest.newBuilder()
+                                //using once request, if need more, use .addheader()
+                                .header("Headers 1: ", "value 1")
+                                .build();
+
+
+                        return chain.proceed(newRequest);
+                    }
+                })
                 .build();
 
 //        Null in empty fields
@@ -83,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 //          createPost();
 
 //        Update using PUT
-        updatePostPut();
+//        updatePostPut();
 //
 //        Update using PATCH
 //        updatePostPatch();
@@ -110,8 +131,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updatePostPatch(){
-        /*update only  selected records*/
+        /*method updatePostPatch() update only  selected records*/
+
         Post post = new Post (5,"Title", null);
+
+        //Using MAP HEADERS
+//        Map<String, String> mapHeaders = new HashMap<>();
+//        mapHeaders.put("Header 1: ", "value 1");
+//        mapHeaders.put("Header 2: ", "value 2");
+//        Call<Post> call = jsonApiPlaceHolder.updatePostPut(mapHeaders, 5 ,post);
+
+
         Call<Post> call = jsonApiPlaceHolder.updatePostPatch(5,post);
         call.enqueue(new Callback<Post>() {
             @Override
