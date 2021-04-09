@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
         jsonApiPlaceHolder = retrofit.create(JsonApiPlaceHolder.class);
 
-        // Get all posts /posts
-        //getAllPosts();
+//        Get all posts /posts
+//        getAllPosts();
 
-        //Get post by id /posts/1 (id)
+//        Get post by id /posts/1 (id)
 //        int postId = 3;
 //        getPostById(postId);
 
@@ -43,24 +43,56 @@ public class MainActivity extends AppCompatActivity {
 //        int postId = 23;
 //        getCommentsForPost(postId);
 
-        //Get post by user Id sort by id, order desc
+//        Get post by user Id sort by id, order desc
 //        int userId = 3;
 //        getPostByUserId(userId);
 
-        //Get list post by user id
-        //empty list get all records
+//        Get list post by user id
+//        empty list get all records
 //        List<Integer> userId = new ArrayList<>();
 //        userId.add(1);
 //        userId.add(2);
 //        userId.add(3);
 //        getListPostByUserId(userId);
 
-        //Get list post by user id using map
-        //getMapPostByUserId();
+//        Get list post by user id using map
+//        getMapPostByUserId();
 
-        //Get list post using url
+//        Get list post using url
 //        getPostUrl();
 
+          createPost();
+    }
+
+    private void createPost(){
+
+//        Map<String, String> fields = new HashMap<>();
+//        fields.put("userId","23");
+//        fields.put("title","New Title");
+//        fields.put("body","New Text");
+//        Call<Post> postCall = jsonApiPlaceHolder.createPost(fields);
+
+        //userId=23&title=New%20Title&body=New%20Text
+        //Call<Post> postCall = jsonApiPlaceHolder.createPost(23,"New Title","New Text");
+
+        Post newPost = new Post(23,"New Title","New Text");
+        Call<Post> postCall = jsonApiPlaceHolder.createPost(newPost);
+        postCall.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if(!response.isSuccessful()){
+                    Log.d(getClass().getSimpleName(), "onResponse|postList|Message" + response.message());
+                    return;
+                }
+                //if code is 201, then post created
+                Log.d("#","Code POST: " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                Log.d(getClass().getSimpleName(), "onFailure|postsList|Message: " + t.getMessage());
+            }
+        });
     }
 
     private void getPostUrl(){
