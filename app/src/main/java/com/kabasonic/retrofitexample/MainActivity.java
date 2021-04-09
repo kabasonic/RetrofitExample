@@ -28,15 +28,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        Null in empty fields
+        Gson gson = new GsonBuilder().serializeNulls().create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         jsonApiPlaceHolder = retrofit.create(JsonApiPlaceHolder.class);
 
-//        Null in empty fields
-        Gson gson = new GsonBuilder().serializeNulls().create();
+
+
 
 //        Get all posts /posts
 //        getAllPosts();
