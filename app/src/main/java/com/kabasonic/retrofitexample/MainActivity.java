@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,12 +30,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+
 //        Null in empty fields
         Gson gson = new GsonBuilder().serializeNulls().create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
                 .build();
 
         jsonApiPlaceHolder = retrofit.create(JsonApiPlaceHolder.class);
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 //          createPost();
 
 //        Update using PUT
-//        updatePostPut();
+        updatePostPut();
 //
 //        Update using PATCH
 //        updatePostPatch();
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     private void updatePostPatch(){
         /*update only  selected records*/
         Post post = new Post (5,"Title", null);
-        Call<Post> call = jsonApiPlaceHolder.updatePostPatch(post.getId(),post);
+        Call<Post> call = jsonApiPlaceHolder.updatePostPatch(5,post);
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
@@ -125,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
     private void updatePostPut(){
         /*update records, but rewrite object*/
         Post post = new Post (5,"Title", null);
-        Call<Post> call = jsonApiPlaceHolder.updatePostPut(post.getId(),post);
+        Call<Post> call = jsonApiPlaceHolder.updatePostPut(5,post);
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
